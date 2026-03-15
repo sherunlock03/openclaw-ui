@@ -1,5 +1,5 @@
 <template>
-  <canvas ref="canvasRef" :height="height"></canvas>
+  <canvas ref="canvasRef"></canvas>
 </template>
 
 <script setup>
@@ -9,71 +9,96 @@ import { Chart, registerables } from 'chart.js'
 Chart.register(...registerables)
 
 const props = defineProps({
-  data: {
-    type: Array,
-    default: () => []
-  },
-  color: {
-    type: String,
-    default: '#00d4ff'
-  },
-  height: {
-    type: Number,
-    default: 150
-  }
+  cpuData: { type: Array, default: () => [] },
+  memData: { type: Array, default: () => [] },
+  netData: { type: Array, default: () => [] }
 })
 
 const canvasRef = ref(null)
 let chart = null
 
-const createGradient = (ctx, color) => {
-  const gradient = ctx.createLinearGradient(0, 0, 0, props.height)
-  gradient.addColorStop(0, color + '40')
-  gradient.addColorStop(1, color + '00')
-  return gradient
-}
-
 onMounted(() => {
   if (!canvasRef.value) return
   
   const ctx = canvasRef.value.getContext('2d')
-  const gradient = createGradient(ctx, props.color)
   
+  // 创建渐变
+  const createGradient = (color1, color2) => {
+    const gradient = ctx.createLinearGradient(0, 0, 0, 300)
+    gradient.addColorStop(0, color1)
+    gradient.addColorStop(1, color2)
+    return gradient
+  }
+
   chart = new Chart(ctx, {
     type: 'line',
     data: {
       labels: Array(60).fill(''),
-      datasets: [{
-        data: props.data,
-        borderColor: props.color,
-        backgroundColor: gradient,
-        borderWidth: 2,
-        fill: true,
-        tension: 0.4,
-        pointRadius: 0,
-        pointHoverRadius: 4,
-        pointHoverBackgroundColor: props.color,
-      }]
+      datasets: [
+        {
+          label: 'CPU',
+          data: props.cpuData,
+          borderColor: '#00d4ff',
+          backgroundColor: createGradient('rgba(0, 212, 255, 0.3)', 'rgba(0, 212, 255, 0)'),
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          pointHoverBackgroundColor: '#00d4ff',
+        },
+        {
+          label: 'Memory',
+          data: props.memData,
+          borderColor: '#a855f7',
+          backgroundColor: createGradient('rgba(168, 85, 247, 0.3)', 'rgba(168, 85, 247, 0)'),
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          pointHoverBackgroundColor: '#a855f7',
+        },
+        {
+          label: 'Network',
+          data: props.netData,
+          borderColor: '#00ff88',
+          backgroundColor: createGradient('rgba(0, 255, 136, 0.2)', 'rgba(0, 255, 136, 0)'),
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          pointHoverBackgroundColor: '#00ff88',
+        }
+      ]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      interaction: {
+        intersect: false,
+        mode: 'index'
+      },
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
-          titleColor: '#fff',
-          bodyColor: '#fff',
-          borderColor: props.color,
+          backgroundColor: 'rgba(0, 20, 40, 0.9)',
+          titleColor: '#00d4ff',
+          bodyColor: '#ffffff',
+          borderColor: 'rgba(0, 212, 255, 0.3)',
           borderWidth: 1,
-          displayColors: false,
+          padding: 12,
+          displayColors: true,
           callbacks: {
-            label: (ctx) => `${ctx.raw}%`
+            label: (ctx) => `${ctx.dataset.label}: ${ctx.raw}%`
           }
         }
       },
       scales: {
-        x: { display: false },
+        x: { 
+          display: false
+        },
         y: {
           display: true,
           min: 0,
@@ -83,15 +108,12 @@ onMounted(() => {
             drawBorder: false
           },
           ticks: {
-            color: 'rgba(255, 255, 255, 0.3)',
+            color: 'rgba(255, 255, 255, 0.4)',
             font: { size: 10 },
-            callback: (value) => value + '%'
+            callback: (value) => value + '%',
+            stepSize: 25
           }
         }
-      },
-      interaction: {
-        intersect: false,
-        mode: 'index'
       },
       animation: {
         duration: 300
@@ -100,9 +122,11 @@ onMounted(() => {
   })
 })
 
-watch(() => props.data, (newData) => {
+watch([() => props.cpuData, () => props.memData, () => props.netData], () => {
   if (chart) {
-    chart.data.datasets[0].data = newData
+    chart.data.datasets[0].data = props.cpuData
+    chart.data.datasets[1].data = props.memData
+    chart.data.datasets[2].data = props.netData
     chart.update('none')
   }
 }, { deep: true })

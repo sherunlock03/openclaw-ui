@@ -1,79 +1,132 @@
 # OpenClaw UI 🖥️
 
-A beautiful, real-time monitoring dashboard for OpenClaw Gateway.
+> 专业级 OpenClaw Gateway 运维监控大屏
 
 ![OpenClaw UI Dashboard](./screenshot.png)
 
-## ✨ Features
+## ✨ 特性
 
-- **Real-time Metrics** - CPU, Memory, Disk usage with live charts
-- **Gateway Status** - Version, port, PID, uptime monitoring
-- **Active Channels** - Connected messaging channels status
-- **Skills & Agents** - Active skills monitoring
-- **Cron Jobs** - Scheduled tasks overview
-- **System Logs** - Terminal-style log viewer
-- **Activity Timeline** - Recent events and actions
+### 📊 实时监控
+- **CPU/内存仪表盘** - 直观的圆弧仪表显示
+- **实时流量图表** - CPU/内存/网络三线对比
+- **系统资源** - 磁盘、网络上下行、负载均值
 
-## 🎨 Design
+### 🔌 Gateway 状态
+- 版本、端口、PID 信息
+- 活动会话数、消息处理量、API调用统计
+- 技能加载状态
 
-- **Cyberpunk-inspired** dark theme
-- **Glowing borders** and gradient accents
-- **Real-time animations** and transitions
-- **Responsive layout** for all screen sizes
+### 📱 活动监控
+- 活动频道状态（Feishu/Telegram等）
+- 技能运行状态
+- 定时任务管理
+- 最近活动时间线
 
-## 🚀 Quick Start
+### 📋 系统信息
+- 主机名、操作系统、内核版本
+- Node.js 版本、架构、内存总量
+- 网络流量统计
+
+### ⚠️ 告警系统
+- 实时告警列表
+- 系统日志终端
+- 多级别日志显示
+
+## 🎨 设计风格
+
+- 🌙 深蓝科技感主题
+- ✨ 发光边框效果
+- 📈 渐变仪表盘
+- 🔮 半透明玻璃拟态
+- ⚡ 实时数据动画
+
+## 🚀 快速开始
 
 ```bash
-# Clone the repository
+# 克隆仓库
 git clone https://github.com/sherunlock03/openclaw-ui.git
 cd openclaw-ui
 
-# Install dependencies
+# 安装依赖
 npm install
 
-# Start development server
+# 启动开发服务器
 npm run dev
 
-# Build for production
+# 构建生产版本
 npm run build
 ```
 
-## 📦 Tech Stack
+## 📦 技术栈
 
-- **Vue 3** - Progressive JavaScript framework
-- **Vite** - Next generation frontend tooling
-- **Tailwind CSS** - Utility-first CSS framework
-- **Chart.js** - Beautiful charts and graphs
+| 技术 | 版本 | 用途 |
+|------|------|------|
+| Vue 3 | ^3.4 | 前端框架 |
+| Vite | ^5.0 | 构建工具 |
+| Tailwind CSS | ^3.4 | 样式框架 |
+| Chart.js | ^4.4 | 图表库 |
 
-## 🔧 Configuration
+## 📐 布局结构
 
-The dashboard connects to your OpenClaw Gateway. You can configure:
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      Header (标题 + 时间)                     │
+├──────────┬────────────────────────────────┬─────────────────┤
+│          │        顶部指标卡片 (5列)        │                 │
+│  左侧栏   ├────────────────────────────────┤     右侧栏      │
+│          │                                  │                 │
+│  CPU仪表 │                                  │   系统信息      │
+│  内存仪表│         主图表区域               │   告警信息      │
+│  系统资源│      (实时流量监控)              │   系统日志      │
+│          │                                  │   网络状态      │
+│          ├────────────────────────────────┤                 │
+│          │   Gateway │ 活动频道 │ 技能状态  │                 │
+│          ├─────────────────────────────────┤                 │
+│          │   定时任务 │ 最近活动            │                 │
+└──────────┴────────────────────────────────┴─────────────────┘
+```
 
-1. **Gateway URL** - Default: `ws://127.0.0.1:18789`
-2. **Token** - Get from `openclaw dashboard --no-open`
+## 🔧 配置
 
-## 📸 Screenshots
+### 连接 Gateway
 
-### Main Dashboard
+1. 确保 OpenClaw Gateway 正在运行
+2. 访问 `http://localhost:5173`
+3. 点击右上角设置按钮配置连接
+
+### 自定义端口
+
+编辑 `vite.config.js`:
+
+```javascript
+export default defineConfig({
+  server: {
+    port: 5173, // 修改为其他端口
+  }
+})
+```
+
+## 📸 截图
+
+### 主界面
 ![Dashboard](./screenshot.png)
 
-### Features
-- 📊 Real-time system metrics
-- 📈 CPU & Memory charts
-- 📋 System logs terminal
-- 🕐 Activity timeline
-- 🔌 Gateway status panel
-- 💬 Active channels
-- ⚡ Skills monitoring
-- ⏰ Cron jobs overview
+### 功能模块
 
-## 🤝 Contributing
+| 模块 | 说明 |
+|------|------|
+| CPU仪表盘 | 圆弧形仪表，颜色随负载变化 |
+| 流量图表 | 三线实时对比，渐变填充 |
+| 告警列表 | 图标+时间线样式 |
+| 日志终端 | 仿终端风格，支持多级别 |
 
-Contributions are welcome! Feel free to submit issues and pull requests.
+## 🤝 贡献
 
-## 📄 License
+欢迎提交 Issue 和 Pull Request！
 
-MIT License - feel free to use this project for your own purposes.
+## 📄 许可证
+
+MIT License
 
 ---
 
